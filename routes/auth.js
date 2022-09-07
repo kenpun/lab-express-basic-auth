@@ -1,17 +1,16 @@
-// # iteration 1 - sign up
 const router = require("express").Router();
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const User = require('../models/User')
+const bcrypt = require('bcryptjs')
 
 router.get('/signup', (req, res, next) => {
-    res.render('signup')
+	res.render('signup')
 });
 
 router.post('/signup', (req, res, next) => {
 	const { username, password } = req.body
 	//validation
 	if (password.length < 4) {
-		res.render('signup', { message: 'Password has to be min 4 chars' })
+		res.render('signup', { message: 'Password has to be 4 chars min' })
 		return
 	}
 	// check if username is not empty
@@ -44,5 +43,43 @@ router.post('/signup', (req, res, next) => {
 			}
 		})
 });
+
+
+router.get('/login', (req, res, next) => {
+	res.render('login')
+});
+
+router.post('/login', (req, res, next) => {
+	const { username, password } = req.body
+	// do we have a user with that username in the db
+	User.findOne({ username: username })
+		.then(userFromDB => {
+			if (userFromDB === null) {
+				// username is not correct -> show the login form again
+				res.render('login', { message: 'Wrong credentials' })
+				return
+			}
+			// username is correct
+			// check if the password from the input form matches the hash from the db
+			if (bcrypt.compareSync(password, userFromDB.password)) {
+				// the password is correct -> the user can be logged in
+				// req.session is an object provided to us by 'express-session'
+				// this is how we log the user in:
+				req.session.user = userFromDB
+				res.redirect('/profile')
+			} else {
+				res.render('login', { message: 'Wrong credentials' })
+				return
+			}
+		})
+        .catch(err =>next(err))
+});
+
+router.get('/logout', (req, res, next) => {
+	// this function is used to log the user out
+	req.session.destroy()
+	res.redirect('/')
+});
+
 
 module.exports = router;
