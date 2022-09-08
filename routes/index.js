@@ -30,10 +30,11 @@ router.get('/profile', loginCheck(), (req, res, next) => {
 
     // TODO: iteration 3 | Protected Routes
 router.get('/main', loginCheck(), (req, res, next) => {
-  const username = req.session.user.username
-  console.log('has been reloaded');
-  res.redirect('main', { username: username })
+  res.render('main')
 })
 
+router.get('/private', loginCheck(), (req, res, next) => {
+  res.render('private')
+})
 
 module.exports = router;

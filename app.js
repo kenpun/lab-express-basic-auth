@@ -41,6 +41,13 @@ app.use(
 )
 // end of session configuration
 
+// passport config
+
+// end of passport config
+
+// telling the app where images are stored
+app.use(express.static('public'));
+
 // 👇 Start handling routes here
 const index = require('./routes/index');
 app.use('/', index);
@@ -48,6 +55,10 @@ app.use('/', index);
 // iteration #1 - authRouter needs to be added
 const auth = require("./routes/auth");
 app.use("/auth", auth);
+
+// roles and authorization iteration
+const rooms = require("./routes/rooms");
+app.use("/", rooms);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);

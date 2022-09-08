@@ -1,0 +1,9 @@
+<h1>All the rooms</h1>
+{{#each rooms}}
+    <div>
+        <h2>Name: {{name}}</h2>
+        <h2>Price: {{price}}</h2>
+        <a href="/rooms/{{_id}}/delete">Delete this room</a>
+    </div>
+{{/each}}
+<a href="/rooms/add">Add a room to the database</a>
